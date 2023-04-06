@@ -1,24 +1,19 @@
-# README
+## tree-of-nodes-api
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
 
-Things you may want to cover:
+## METADATA
 
-* Ruby version
+* Project name: [tree-of-nodes-api](https://github.com/tqc-michalp/tree-of-nodes-api)
+* Owner: [tqc-michalp](https://github.com/tqc-michalp)
+* License: It is a property of [Thinqcraft](https://www.thinqcraft.com/). All rights reserved.
 
-* System dependencies
 
-* Configuration
+## ABOUT
+tree-of-nodes-api is a Ruby on Rails application that serves as a REST API. The project provides endpoints for collecting data about nodes and birds.
 
-* Database creation
 
-* Database initialization
+## DECISIONS
 
-* How to run the test suite
+#### CORE LOGIC
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+#### PATTERNS
