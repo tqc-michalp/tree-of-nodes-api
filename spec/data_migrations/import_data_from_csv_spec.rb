@@ -19,7 +19,7 @@ describe ImportDataFromCsv do
     expect(Node.where(parent_id: nil).count).to eq 203
   end
 
-  it 'present some random imported nodes', focus: true do
+  it 'present some random imported nodes' do
     expect(Node.find_by(id: 256_411, parent_id: nil)).to be_present
     expect(Node.find_by(id: 340_629, parent_id: 165_531)).to be_present
   end
