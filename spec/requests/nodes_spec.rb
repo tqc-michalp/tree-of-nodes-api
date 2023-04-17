@@ -12,7 +12,7 @@ RSpec.describe 'Nodes', type: :request do
 
         get '/common_ancestor', params: { a: node_6.id, b: node_7.id }
 
-        expect(JSON.parse(response.body)).to eq({ 'root_id' => node_4.id, 'lowest_common_ancestor' => node_3.id,
+        expect(JSON.parse(response.body)).to eq({ 'root_id' => node_3.id, 'lowest_common_ancestor' => node_6.id,
                                                   'depth' => 3 })
       end
     end

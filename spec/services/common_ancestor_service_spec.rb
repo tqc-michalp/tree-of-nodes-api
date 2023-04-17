@@ -45,7 +45,7 @@ RSpec.describe CommonAncestorService, type: :service do
         it 'returns as a root input, lowest by traversing to parent nil and depth adequatly' do
           result = CommonAncestorService.new(node_5.id, node_5.id).call
 
-          expect(result).to eq(root_id: node_5.id, lowest_common_ancestor: node_3.id, depth: 2)
+          expect(result).to eq(root_id: node_3.id, lowest_common_ancestor: node_5.id, depth: 3)
         end
       end
     end
@@ -71,39 +71,68 @@ RSpec.describe CommonAncestorService, type: :service do
 
         result = CommonAncestorService.new(node_2.id, node_5.id).call
 
-        expect(result).to eq({ root_id: node_1.id, lowest_common_ancestor: node_1.id, depth: 3 })
+        expect(result).to eq({ root_id: node_1.id, lowest_common_ancestor: node_1.id, depth: 1 })
       end
     end
 
     context 'when there is one common ancestor and exist lowest common ancestor' do
-      it 'returns response pointing to first common ancestor with lowest common ancestor' do
-        node_3 = create(:node)
-        node_4 = create(:node, parent: node_3)
-        create(:node, parent: node_4)
-        node_6 = create(:node, parent: node_4)
-        node_7 = create(:node, parent: node_6)
+      describe 'example 1' do
+        it 'returns response pointing to first common ancestor with lowest common ancestor' do
+          node_3 = create(:node)
+          node_4 = create(:node, parent: node_3)
+          create(:node, parent: node_4)
+          node_6 = create(:node, parent: node_4)
+          node_7 = create(:node, parent: node_6)
 
-        result = CommonAncestorService.new(node_6.id, node_7.id).call
+          result = CommonAncestorService.new(node_6.id, node_7.id).call
 
-        expect(result).to eq({ root_id: node_4.id, lowest_common_ancestor: node_3.id, depth: 3 })
+          expect(result).to eq({ root_id: node_3.id, lowest_common_ancestor: node_6.id, depth: 3 })
+        end
+      end
+
+      describe 'example 2' do
+        it 'returns response pointing to first common ancestor with lowest common ancestor' do
+          node_3 = create(:node)
+          node_4 = create(:node, parent: node_3)
+          node_5 = create(:node, parent: node_4)
+          node_6 = create(:node, parent: node_5)
+          node_7 = create(:node, parent: node_6)
+          node_8 = create(:node, parent: node_7)
+          node_66 = create(:node, parent: node_5)
+          node_77 = create(:node, parent: node_66)
+          node_88 = create(:node, parent: node_77)
+
+          result = CommonAncestorService.new(node_88.id, node_8.id).call
+
+          # ::Kernel.binding.irb
+
+          expect(result).to eq({ root_id: node_3.id, lowest_common_ancestor: node_5.id, depth: 3 })
+        end
       end
     end
 
-    context 'when there is one common ancestor and exist lowest common ancestor' do
-      it 'returns response pointing to first common ancestor with lowest common ancestor' do
-        node_3 = create(:node)
-        node_4 = create(:node, parent: node_3)
-        node_5 = create(:node, parent: node_4)
-        node_6 = create(:node, parent: node_5)
-        node_7 = create(:node, parent: node_6)
-        node_8 = create(:node, parent: node_7)
-        node_66 = create(:node, parent: node_5)
-        node_77 = create(:node, parent: node_66)
-        node_88 = create(:node, parent: node_77)
+    context 'nodes tree structure accordingly to description' do
+      it 'returns results accordingly' do
+        node_130 = create(:node, id: 130)
+        node_125 = create(:node, id: 125, parent: node_130)
+        create(:node, id: 2_820_230, parent: node_125)
+        node_4430546 = create(:node, id: 4_430_546, parent: node_125)
+        create(:node, id: 5_497_637, parent: node_4430546)
 
-        result = CommonAncestorService.new(node_88.id, node_8.id).call
+        result = CommonAncestorService.new(5_497_637, 2_820_230).call
+        expect(result).to eq({ root_id: 130, lowest_common_ancestor: 125, depth: 2 })
 
-        expect(result).to eq({ root_id: node_5.id, lowest_common_ancestor: node_3.id, depth: 7 })
+        result = CommonAncestorService.new(5_497_637, 130).call
+        expect(result).to eq({ root_id: 130, lowest_common_ancestor: 130, depth: 1 })
+
+        result = CommonAncestorService.new(5_497_637, 4_430_546).call
+        expect(result).to eq({ root_id: 130, lowest_common_ancestor: 4_430_546, depth: 3 })
+
+        result = CommonAncestorService.new(9, 4_430_546).call
+        expect(result).to eq({ root_id: nil, lowest_common_ancestor: nil, depth: nil })
+
+        result = CommonAncestorService.new(4_430_546, 4_430_546).call
+        expect(result).to eq({ root_id: 130, lowest_common_ancestor: 4_430_546, depth: 3 })
       end
     end
   end
