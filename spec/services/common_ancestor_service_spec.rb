@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe CommonAncestorService, type: :service do
-  describe '.call' do
+  describe '.root_lowest_depth' do
     context 'when value provided by' do
       let(:node_1) { create(:node) }
       let(:node_2) { create(:node, parent: node_1) }
@@ -11,7 +11,7 @@ RSpec.describe CommonAncestorService, type: :service do
 
       context 'first param is nil' do
         it 'returns empty response' do
-          result = CommonAncestorService.new(nil, node_5.id).call
+          result = CommonAncestorService.new(nil, node_5.id).root_lowest_depth
 
           expect(result).to eq(root_id: nil, lowest_common_ancestor: nil, depth: nil)
         end
@@ -19,7 +19,7 @@ RSpec.describe CommonAncestorService, type: :service do
 
       context 'second param is nil' do
         it 'returns empty response' do
-          result = CommonAncestorService.new(node_2.id, nil).call
+          result = CommonAncestorService.new(node_2.id, nil).root_lowest_depth
 
           expect(result).to eq(root_id: nil, lowest_common_ancestor: nil, depth: nil)
         end
@@ -27,7 +27,7 @@ RSpec.describe CommonAncestorService, type: :service do
 
       context 'node by first param does not exist' do
         it 'returns empty response' do
-          result = CommonAncestorService.new(22, node_5.id).call
+          result = CommonAncestorService.new(22, node_5.id).root_lowest_depth
 
           expect(result).to eq(root_id: nil, lowest_common_ancestor: nil, depth: nil)
         end
@@ -35,7 +35,7 @@ RSpec.describe CommonAncestorService, type: :service do
 
       context 'node by second param does not exist' do
         it 'returns empty response' do
-          result = CommonAncestorService.new(node_1.id, 22).call
+          result = CommonAncestorService.new(node_1.id, 22).root_lowest_depth
 
           expect(result).to eq(root_id: nil, lowest_common_ancestor: nil, depth: nil)
         end
@@ -43,7 +43,7 @@ RSpec.describe CommonAncestorService, type: :service do
 
       context 'both of params are equal' do
         it 'returns as a root input, lowest by traversing to parent nil and depth adequatly' do
-          result = CommonAncestorService.new(node_5.id, node_5.id).call
+          result = CommonAncestorService.new(node_5.id, node_5.id).root_lowest_depth
 
           expect(result).to eq(root_id: node_3.id, lowest_common_ancestor: node_5.id, depth: 3)
         end
@@ -55,7 +55,7 @@ RSpec.describe CommonAncestorService, type: :service do
         node_1 = create(:node)
         node_2 = create(:node)
 
-        result = CommonAncestorService.new(node_1.id, node_2.id).call
+        result = CommonAncestorService.new(node_1.id, node_2.id).root_lowest_depth
 
         expect(result).to eq({ root_id: nil, lowest_common_ancestor: nil, depth: 0 })
       end
@@ -69,7 +69,7 @@ RSpec.describe CommonAncestorService, type: :service do
         node_4 = create(:node, parent: node_3)
         node_5 = create(:node, parent: node_4)
 
-        result = CommonAncestorService.new(node_2.id, node_5.id).call
+        result = CommonAncestorService.new(node_2.id, node_5.id).root_lowest_depth
 
         expect(result).to eq({ root_id: node_1.id, lowest_common_ancestor: node_1.id, depth: 1 })
       end
@@ -84,7 +84,7 @@ RSpec.describe CommonAncestorService, type: :service do
           node_6 = create(:node, parent: node_4)
           node_7 = create(:node, parent: node_6)
 
-          result = CommonAncestorService.new(node_6.id, node_7.id).call
+          result = CommonAncestorService.new(node_6.id, node_7.id).root_lowest_depth
 
           expect(result).to eq({ root_id: node_3.id, lowest_common_ancestor: node_6.id, depth: 3 })
         end
@@ -102,9 +102,7 @@ RSpec.describe CommonAncestorService, type: :service do
           node_77 = create(:node, parent: node_66)
           node_88 = create(:node, parent: node_77)
 
-          result = CommonAncestorService.new(node_88.id, node_8.id).call
-
-          # ::Kernel.binding.irb
+          result = CommonAncestorService.new(node_88.id, node_8.id).root_lowest_depth
 
           expect(result).to eq({ root_id: node_3.id, lowest_common_ancestor: node_5.id, depth: 3 })
         end
@@ -119,19 +117,19 @@ RSpec.describe CommonAncestorService, type: :service do
         node_4430546 = create(:node, id: 4_430_546, parent: node_125)
         create(:node, id: 5_497_637, parent: node_4430546)
 
-        result = CommonAncestorService.new(5_497_637, 2_820_230).call
+        result = CommonAncestorService.new(5_497_637, 2_820_230).root_lowest_depth
         expect(result).to eq({ root_id: 130, lowest_common_ancestor: 125, depth: 2 })
 
-        result = CommonAncestorService.new(5_497_637, 130).call
+        result = CommonAncestorService.new(5_497_637, 130).root_lowest_depth
         expect(result).to eq({ root_id: 130, lowest_common_ancestor: 130, depth: 1 })
 
-        result = CommonAncestorService.new(5_497_637, 4_430_546).call
+        result = CommonAncestorService.new(5_497_637, 4_430_546).root_lowest_depth
         expect(result).to eq({ root_id: 130, lowest_common_ancestor: 4_430_546, depth: 3 })
 
-        result = CommonAncestorService.new(9, 4_430_546).call
+        result = CommonAncestorService.new(9, 4_430_546).root_lowest_depth
         expect(result).to eq({ root_id: nil, lowest_common_ancestor: nil, depth: nil })
 
-        result = CommonAncestorService.new(4_430_546, 4_430_546).call
+        result = CommonAncestorService.new(4_430_546, 4_430_546).root_lowest_depth
         expect(result).to eq({ root_id: 130, lowest_common_ancestor: 4_430_546, depth: 3 })
       end
     end
