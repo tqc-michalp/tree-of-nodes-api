@@ -8,20 +8,33 @@ class CommonAncestorService
     @b = id_a == id_b ? @a : Node.find_by(id: id_b)
   end
 
-  def call
-    return outcome if a.nil? || b.nil?
+  def root_lowest_depth
+    @root_lowest_depth ||= begin
+      return root_lowest_depth_hash if a.nil? || b.nil?
 
-    tree_of_nodes(a, nodes_a)
-    tree_of_nodes(b, nodes_b) if a.id != b.id
-    outcome.merge!(root_id:, lowest_common_ancestor:, depth:)
+      tree_of_nodes(a, nodes_a)
+      tree_of_nodes(b, nodes_b) if a.id != b.id
+      root_lowest_depth_hash.merge!(root_id:, lowest_common_ancestor:,
+                                    depth:)
 
-    outcome
+      root_lowest_depth_hash
+    end
+  end
+
+  def nodes
+    @nodes ||= begin
+      return [] if a.nil?
+
+      tree_of_nodes(a, nodes_a)
+
+      common_nodes
+    end
   end
 
   private
 
-  def outcome
-    @outcome ||= { root_id: nil, lowest_common_ancestor: nil, depth: nil }
+  def root_lowest_depth_hash
+    @root_lowest_depth_hash ||= { root_id: nil, lowest_common_ancestor: nil, depth: nil }
   end
 
   def nodes_a

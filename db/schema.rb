@@ -12,9 +12,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_406_152_149) do
+ActiveRecord::Schema[7.0].define(version: 20_230_417_175_642) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
+
+  create_table 'birds', force: :cascade do |t|
+    t.bigint 'node_id', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['node_id'], name: 'index_birds_on_node_id'
+  end
 
   create_table 'nodes', force: :cascade do |t|
     t.bigint 'parent_id'
@@ -23,5 +30,6 @@ ActiveRecord::Schema[7.0].define(version: 20_230_406_152_149) do
     t.index ['parent_id'], name: 'index_nodes_on_parent_id'
   end
 
+  add_foreign_key 'birds', 'nodes'
   add_foreign_key 'nodes', 'nodes', column: 'parent_id'
 end
